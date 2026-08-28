@@ -42,19 +42,40 @@ local function load_texture(path, on_ready)
 	end)
 end
 
-assets.ensure_loaded = function ()
-	if _requested then
-		return
-	end
-
-	_requested = true
-
+local function request_textures()
 	load_texture(ASSET_ROOT .. SCANLINE_FILE, function (texture)
 		_scanline_texture = texture
 	end)
 
 	load_texture(ASSET_ROOT .. GRAIN_FILE, function (texture)
 		_grain_texture = texture
+	end)
+end
+
+assets.ensure_loaded = function ()
+	if _requested then
+		return
+	end
+
+	local backend = Managers and Managers.backend
+
+	if not backend or type(backend.authenticate) ~= "function" then
+		return
+	end
+
+	local promise = backend:authenticate()
+
+	if not (promise and type(promise.next) == "function") then
+		return
+	end
+
+	_requested = true
+
+	promise:next(request_textures, function (err)
+		_requested = false
+
+		mod:error("Preysight: backend authentication failed, textures deferred (%s)",
+			err and err.error or "unknown error")
 	end)
 end
 

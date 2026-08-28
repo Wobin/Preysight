@@ -1,7 +1,7 @@
 --[[
 	Name: Preysight
 	Author: Wobin
-	Date: 26/08/2026
+	Date: 28/08/2026
 	Repository: https://github.com/Wobin/Preysight
 ]]--
 
@@ -400,13 +400,39 @@ local function hsv_swatch(h, s, v)
 	return swatch(mod.colour.hsv_to_rgb(h, s, v))
 end
 
-local function sync_hue_options(archetype_name)
-	local widget = widget_by_id(HUE_SETTING_ID)
+local function apply_dropdown_options(setting_id, options)
+	local widget = widget_by_id(setting_id)
 
-	if not widget then
+	if widget then
+		widget.options = options
+	end
+
+	local live = live_content(setting_id)
+	local live_options = live and rawget(live, "options")
+
+	if type(live_options) ~= "table" or #live_options ~= #options then
 		return
 	end
 
+	for i = 1, #options do
+		live_options[i].display_name = options[i].text
+		live_options[i].text = options[i].text
+	end
+end
+
+local function auto_suffix(defs, head_item_id, archetype_name)
+	if mod.lenses.is_skitarii(archetype_name) then
+		return mod:localize("preysight_teach_head_auto_skitarii")
+	end
+
+	if head_item_id and mod.lenses.head_has_lenses(defs, head_item_id) then
+		return mod:localize("preysight_teach_head_auto_detected")
+	end
+
+	return mod:localize("preysight_teach_head_auto_undetected")
+end
+
+local function sync_hue_options(archetype_name)
 	local skitarii = mod.lenses.is_skitarii(archetype_name)
 	local options = {}
 
@@ -430,17 +456,17 @@ local function sync_hue_options(archetype_name)
 		show_widgets = { 1 },
 	}
 
-	widget.options = options
+	apply_dropdown_options(HUE_SETTING_ID, options)
+end
 
-	local live = live_content(HUE_SETTING_ID)
-	local live_options = live and rawget(live, "options")
+local function sync_teach_options(defs, head_item_id, archetype_name)
+	local options = {
+		{ text = mod:localize("preysight_teach_head_auto") .. auto_suffix(defs, head_item_id, archetype_name), value = "auto" },
+		{ text = mod:localize("preysight_teach_head_on"), value = "on" },
+		{ text = mod:localize("preysight_teach_head_off"), value = "off" },
+	}
 
-	if type(live_options) == "table" and #live_options == #options then
-		for i = 1, #options do
-			live_options[i].display_name = options[i].text
-			live_options[i].text = options[i].text
-		end
-	end
+	apply_dropdown_options(TEACH_SETTING_ID, options)
 end
 
 local function set_teach_widget_value(value)
@@ -507,6 +533,7 @@ local function sync_teach_widget(defs, head_item_id, archetype_name)
 		.. "\n\n" .. detection_note(defs, head_item_id, archetype_name)
 
 	sync_hue_options(archetype_name)
+	sync_teach_options(defs, head_item_id, archetype_name)
 	set_teach_widget_title(label, tooltip)
 
 	local stored = head_item_id and _taught[head_item_id]
@@ -601,6 +628,7 @@ local function tick(dt)
 
 	_accum = 0
 
+	mod.assets.ensure_loaded()
 	refresh_qualification(false)
 
 	local on = should_be_on()

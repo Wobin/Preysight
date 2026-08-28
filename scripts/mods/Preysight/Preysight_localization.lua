@@ -170,6 +170,15 @@ return {
 	preysight_teach_head_auto = {
 		en = "Automatic",
 	},
+	preysight_teach_head_auto_detected = {
+		en = " - lenses detected",
+	},
+	preysight_teach_head_auto_undetected = {
+		en = " - NO lenses detected",
+	},
+	preysight_teach_head_auto_skitarii = {
+		en = " - Skitarii augmetics",
+	},
 	preysight_teach_head_on = {
 		en = "Always on",
 	},

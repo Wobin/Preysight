@@ -51,7 +51,7 @@ effect runs in every mission regardless of lighting.
 
 Automatic detection for point 3 above works by pattern-matching the internal names inside a head
 item's attachment tree. Measured against the full item list, this catches roughly one in five head
-items, 321 of 1642. It is not a complete list of every lensed cosmetic in the game, and playing
+items. It is not a complete list of every lensed cosmetic in the game, and playing
 more will not extend it; the coverage is fixed by what the underlying item names actually
 describe.
 
@@ -65,7 +65,6 @@ head item, not just the one you are currently wearing.
 Skitarii headgear specifically is missed by this detection entirely, since their item names carry
 no descriptive token the pattern matcher can key on. This does not cost them the effect in
 practice, because every Skitarii already qualifies unconditionally by archetype (point 1 above).
-Worth stating plainly so the gap does not read as a bug.
 
 
 ## Scanlines and grain
@@ -93,9 +92,8 @@ the picture either. It only tints what is already there.
 ## The forward light sits behind and above you, on purpose
 
 If the forward light is enabled, it is mounted about 1.5 metres behind your head and 1.5 metres
-above it, not in front of you. This is deliberate, not a placement error: you never look directly
-into the light source, so it does not ruin your own dark adaptation, while it still spills forward
-into the scene ahead of you.
+above it, not in front of you. You never look directly into the light source, so it does not ruin 
+your own dark adaptation, while it still spills forward into the scene ahead of you.
 
 
 ## Outlines and the HUD keep their own colours
@@ -110,12 +108,6 @@ that coding is not lost while Preysight is active.
 If Machine God's Beacon is installed and enabled, Preysight's own darkness detection switches
 itself off (logged once on load) so the two mods are not fighting over what counts as dark. Turn
 on "Always on" in Preysight's own settings if you still want it active.
-
-
-## Client side only
-
-Only you see any of this. It does not touch anything for your teammates or anyone else in your
-game.
 
 
 ## Credits

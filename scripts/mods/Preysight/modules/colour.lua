@@ -29,6 +29,47 @@ local function hsv_to_rgb(h, s, v)
 	return v, p, q
 end
 
+local function rgb_to_hsv(r, g, b)
+	local max = r
+
+	if g > max then
+		max = g
+	end
+
+	if b > max then
+		max = b
+	end
+
+	local min = r
+
+	if g < min then
+		min = g
+	end
+
+	if b < min then
+		min = b
+	end
+
+	local delta = max - min
+
+	if max <= 0 or delta <= 0 then
+		return 0, 0, max
+	end
+
+	local h
+
+	if max == r then
+		h = (g - b) / delta % 6
+	elseif max == g then
+		h = (b - r) / delta + 2
+	else
+		h = (r - g) / delta + 4
+	end
+
+	return h / 6, delta / max, max
+end
+
 colour.hsv_to_rgb = hsv_to_rgb
+colour.rgb_to_hsv = rgb_to_hsv
 
 return colour

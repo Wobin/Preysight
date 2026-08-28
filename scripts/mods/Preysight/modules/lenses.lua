@@ -1,5 +1,9 @@
 local LENS_PATH = "/lens_primary_colors/"
-local HSV_PROPERTY = "emissive_color_hsv_1"
+
+local LENS_SLOTS = {
+	{ path = "/lens_primary_colors/", property = "emissive_color_hsv_1" },
+	{ path = "/lens_secondary_colors/", property = "emissive_color_hsv_2" },
+}
 
 local POSITIVE_TOKENS = {
 	"goggle",
@@ -49,12 +53,26 @@ local EMISSIVE_VALUE = 0.7
 
 local lenses = {}
 
+local function lens_property(colour_item_id)
+	for i = 1, #LENS_SLOTS do
+		local slot = LENS_SLOTS[i]
+
+		if colour_item_id:find(slot.path, 1, true) then
+			return slot.property
+		end
+	end
+
+	return nil
+end
+
 local function lens_hsv(defs, colour_item_id)
 	if type(colour_item_id) ~= "string" or not defs then
 		return nil
 	end
 
-	if not colour_item_id:find(LENS_PATH, 1, true) then
+	local property = lens_property(colour_item_id)
+
+	if not property then
 		return nil
 	end
 
@@ -71,7 +89,7 @@ local function lens_hsv(defs, colour_item_id)
 
 		if vectors then
 			for _, entry in ipairs(vectors) do
-				if entry.property_name == HSV_PROPERTY then
+				if entry.property_name == property then
 					local value = entry.value
 
 					if type(value) ~= "table" then
@@ -182,6 +200,22 @@ local function head_has_lenses(defs, head_item_id)
 	return false
 end
 
+local function head_opted_out(head_item_id, taught)
+	return head_item_id ~= nil and taught ~= nil and taught[head_item_id] == false
+end
+
+local function head_is_lensed(defs, head_item_id, taught)
+	if head_opted_out(head_item_id, taught) then
+		return false
+	end
+
+	if head_item_id and taught and taught[head_item_id] == true then
+		return true
+	end
+
+	return head_has_lenses(defs, head_item_id)
+end
+
 local function qualifies(defs, archetype_name, eye_item_id, head_item_id, taught)
 	if archetype_name == CRYPTIC then
 		return true
@@ -191,15 +225,7 @@ local function qualifies(defs, archetype_name, eye_item_id, head_item_id, taught
 		return true
 	end
 
-	if head_has_lenses(defs, head_item_id) then
-		return true
-	end
-
-	if head_item_id and taught and taught[head_item_id] then
-		return true
-	end
-
-	return false
+	return head_is_lensed(defs, head_item_id, taught)
 end
 
 -- Headgear emissive hue
@@ -237,6 +263,46 @@ local function item_emissive_word(defs, item_id)
 	return nil
 end
 
+local function attachment_emissive_word(defs, item, depth)
+	if type(item) ~= "table" or depth > MAX_ATTACHMENT_DEPTH then
+		return nil
+	end
+
+	local attachments = item.attachments
+
+	if type(attachments) ~= "table" then
+		return nil
+	end
+
+	for _, entry in pairs(attachments) do
+		if type(entry) == "table" then
+			local override_items = entry.material_override_items
+
+			if type(override_items) == "table" then
+				for _, override_id in pairs(override_items) do
+					local word = emissive_colour_word(override_id)
+
+					if word then
+						return word
+					end
+				end
+			end
+
+			local child_id = entry.item
+
+			if type(child_id) == "string" and child_id ~= "" then
+				local word = attachment_emissive_word(defs, defs[child_id], depth + 1)
+
+				if word then
+					return word
+				end
+			end
+		end
+	end
+
+	return nil
+end
+
 local function headgear_colour_word(defs, head_item_id)
 	if not defs or not head_item_id then
 		return nil
@@ -249,6 +315,12 @@ local function headgear_colour_word(defs, head_item_id)
 	end
 
 	local word = item_emissive_word(defs, head_item_id)
+
+	if word then
+		return word
+	end
+
+	word = attachment_emissive_word(defs, item, 0)
 
 	if word then
 		return word
@@ -281,6 +353,11 @@ end
 
 lenses.collect_names = collect_names
 lenses.head_has_lenses = head_has_lenses
+lenses.is_skitarii = function (archetype_name)
+	return archetype_name == CRYPTIC
+end
+
+lenses.head_is_lensed = head_is_lensed
 lenses.qualifies = qualifies
 lenses.headgear_colour_word = headgear_colour_word
 lenses.headgear_hue = headgear_hue

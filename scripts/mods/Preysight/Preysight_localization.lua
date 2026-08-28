@@ -21,6 +21,12 @@ return {
 	preysight_always_on_tooltip = {
 		en = "Keep the effect active in every mission instead of only in darkness conditions.",
 	},
+	preysight_mute_sound = {
+		en = "Mute sound",
+	},
+	preysight_mute_sound_tooltip = {
+		en = "Silence the power-up whine, the running hum and the shutdown cue. The visual effect is unchanged.",
+	},
 
 	preysight_tuning_group = {
 		en = "Tuning",
@@ -92,6 +98,12 @@ return {
 	preysight_hue_source_lens = {
 		en = "Lens or headgear colour",
 	},
+	preysight_hue_source_lens_primary = {
+		en = "Primary lens colour",
+	},
+	preysight_hue_source_lens_secondary = {
+		en = "Secondary lens colour",
+	},
 	preysight_hue_source_fixed = {
 		en = "Fixed colour",
 	},
@@ -140,15 +152,35 @@ return {
 		en = "No headgear detected",
 	},
 	preysight_teach_head_tooltip = {
-		en = "Ticking marks the headgear named above as lensed, for headgear the automatic detector misses. The label always shows whatever head item you currently have equipped; unticking removes that item from the taught list.",
+		en = "Whether the headgear named above counts as lensed. Automatic uses the detector, which misses roughly four head items in five. Always on marks it lensed by hand; Never excludes it even if the detector finds lenses. The label always shows whatever head item you currently have equipped, and each headgear remembers its own choice.",
 	},
 	preysight_teach_head_no_headgear = {
 		en = "No headgear detected",
 	},
+	preysight_teach_head_note_detected = {
+		en = "Detector: lenses found on this headgear.",
+	},
+	preysight_teach_head_note_undetected = {
+		en = "Detector: no lenses found on this headgear. Choose Always on to use it anyway.",
+	},
+	preysight_teach_head_note_skitarii = {
+		en = "Skitarii always qualify by augmetics, whatever this is set to.",
+	},
+
+	preysight_teach_head_auto = {
+		en = "Automatic",
+	},
+	preysight_teach_head_on = {
+		en = "Always on",
+	},
+	preysight_teach_head_off = {
+		en = "Never",
+	},
+
 	preysight_forget_taught = {
-		en = "Forget taught headgear",
+		en = "Reset this headgear",
 	},
 	preysight_forget_taught_tooltip = {
-		en = "Clears every head item marked as lensed by hand.",
+		en = "Hold to clear the settings for the headgear you are wearing, returning it to defaults. Other headgear is untouched.",
 	},
 }

@@ -28,12 +28,31 @@ return {
 						title = "preysight_always_on",
 						tooltip = "preysight_always_on_tooltip",
 					},
+					{
+						setting_id = "preysight_mute_sound",
+						type = "checkbox",
+						default_value = false,
+						title = "preysight_mute_sound",
+						tooltip = "preysight_mute_sound_tooltip",
+					},
 				},
 			},
 			{
 				setting_id = "preysight_headgear_group",
 				type = "group",
 				sub_widgets = {
+					{
+						setting_id = "preysight_teach_head",
+						type = "dropdown",
+						default_value = "auto",
+						title = "preysight_teach_head",
+						tooltip = "preysight_teach_head_tooltip",
+						options = {
+							{ text = "preysight_teach_head_auto", value = "auto" },
+							{ text = "preysight_teach_head_on", value = "on" },
+							{ text = "preysight_teach_head_off", value = "off" },
+						},
+					},
 					{
 						setting_id = "preysight_hue_source",
 						type = "dropdown",
@@ -42,6 +61,7 @@ return {
 						tooltip = "preysight_hue_source_tooltip",
 						options = {
 							{ text = "preysight_hue_source_lens", value = "lens" },
+							{ text = "preysight_hue_source_lens_secondary", value = "lens_secondary" },
 							{ text = "preysight_hue_source_fixed", value = "fixed", show_widgets = { 1 } },
 						},
 						sub_widgets = {
@@ -55,17 +75,11 @@ return {
 						},
 					},
 					{
-						setting_id = "preysight_teach_head",
-						type = "checkbox",
-						default_value = false,
-						title = "preysight_teach_head",
-						tooltip = "preysight_teach_head_tooltip",
-					},
-					{
 						setting_id = "preysight_forget_taught",
 						type = "button",
 						button_text = "preysight_forget_taught",
-						button_trigger = "pressed",
+						button_trigger = "held",
+						button_hold_duration = 1.5,
 						function_name = "_forget_taught",
 						title = "preysight_forget_taught",
 						tooltip = "preysight_forget_taught_tooltip",

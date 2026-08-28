@@ -1,0 +1,13 @@
+{
+	"name": "Preysight",
+	"description": "Night vision for characters with augmetic lenses.",
+	"version": "1.0.0",
+	"author": "Wobin",
+	"order": {
+		"require": [],
+		"this_after": [
+			"SimpleAssets"
+		],
+		"this_before": []
+	}
+}
